@@ -20,7 +20,6 @@ class UsersViewModel: ObservableObject {
     func loadMoreUsers() async {
         guard !isLoading, hasMorePages else { return }
         isLoading = true
-        errorMessage = nil
 
         do {
             let (newUsers, support) = try await apiService.fetchUsers(page: currentPage)

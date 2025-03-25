@@ -41,18 +41,15 @@ struct UserDetailsView: View {
             Button(action: {
                 viewModel.toggleFavorite(user)
             }) {
-                Label(viewModel.favorites.contains { $0.email == user.email } ? "Видалити з улюблених" : "Додати до улюблених", systemImage: "heart.fill")
+                let isFavorite = viewModel.checkIsFavorite(user)
+                Label(isFavorite ? "Видалити з улюблених" : "Додати до улюблених", systemImage: "heart.fill")
                     .padding()
-                    .background(Color.blue)
+                    .background(isFavorite ? Color.red : Color.blue)
                     .foregroundColor(.white)
                     .cornerRadius(8)
             }
         }
         .padding()
         .navigationTitle("Деталі")
-        .alert(isPresented: .init(get: { viewModel.error != nil }, set: { _ in viewModel.error = nil })) {
-            Alert(title: Text("Помилка"), message: Text(viewModel.error.debugDescription))
-        }
     }
 }
-

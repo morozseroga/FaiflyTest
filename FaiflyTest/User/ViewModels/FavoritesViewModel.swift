@@ -9,43 +9,35 @@ import Foundation
 import RealmSwift
 
 class FavoritesViewModel: ObservableObject {
-    @Published var favorites: [FavoriteUser] = []
-    @Published var error: Error?
+    @ObservedResults(FavoriteUser.self) var favorites
     
-    private let realmService = RealmService()
+    @Published var isFavorite: Bool = false
     
-    func loadFavorites() {
-        DispatchQueue.main.async {
-            let realm = try! Realm()
-            self.favorites = Array(realm.objects(FavoriteUser.self))
-        }
+    func checkIsFavorite(_ user: User) -> Bool {
+        return favorites.contains { $0.email == user.email && !$0.isInvalidated }
     }
     
     func toggleFavorite(_ user: User) {
-        do {
-            let realm = try Realm()
-            let predicate = NSPredicate(format: "email = %@", user.email)
-            let existing = realm.objects(FavoriteUser.self).filter(predicate).first
-            
-            if let existing = existing {
-                try realm.write {
-                    realm.delete(existing)
-                }
-            } else {
-                let favorite = FavoriteUser()
-                favorite.email = user.email
-                favorite.first_name = user.first_name
-                favorite.last_name = user.last_name
-                favorite.avatar = user.avatar
-                
-                try realm.write {
-                    realm.add(favorite)
-                }
+        let realm = try! Realm()
+        let predicate = NSPredicate(format: "email = %@", user.email)
+        
+        if let existing = realm.objects(FavoriteUser.self).filter(predicate).first {
+            try! realm.write {
+                realm.delete(existing)
             }
-            loadFavorites()
-        } catch {
-            self.error = error
+            isFavorite = false
+        } else {
+            let favorite = FavoriteUser()
+            favorite.id = user.id
+            favorite.email = user.email
+            favorite.first_name = user.first_name
+            favorite.last_name = user.last_name
+            favorite.avatar = user.avatar
+            
+            try! realm.write {
+                realm.add(favorite)
+            }
+            isFavorite = true
         }
     }
 }
-

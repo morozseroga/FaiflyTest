@@ -8,7 +8,7 @@
 import Foundation
 import RealmSwift
 
-@objcMembers class FavoriteUser: Object {
+@objcMembers class FavoriteUser: Object, Identifiable {
     @objc dynamic var id: Int = 0
     @objc dynamic var email: String = ""
     @objc dynamic var first_name: String = ""

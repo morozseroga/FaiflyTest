@@ -6,22 +6,23 @@
 //
 
 import SwiftUI
+import RealmSwift
 
 struct FavoritesListView: View {
-    @StateObject private var viewModel = FavoritesViewModel()
+    @ObservedResults(FavoriteUser.self) var favorites
     
     var body: some View {
-        List(viewModel.favorites, id: \.email) { favorite in
-            if let user = favorite.asUser {
-                UserRow(user: user)
+        NavigationView {
+            List {
+                ForEach(favorites.filter { !$0.isInvalidated }, id: \.email) { favorite in
+                    if let user = favorite.asUser {
+                        NavigationLink(destination: UserDetailsView(user: user, supportText: nil)) {
+                            UserRow(user: user)
+                        }
+                    }
+                }
             }
-        }
-        .navigationTitle("Улюблене")
-        .refreshable {
-            viewModel.loadFavorites()
-        }
-        .onAppear {
-            viewModel.loadFavorites()
+            .navigationTitle("Улюблені")
         }
     }
 }
