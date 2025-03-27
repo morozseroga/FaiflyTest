@@ -10,7 +10,7 @@ import SwiftUI
 struct UserDetailsView: View {
     let user: User
     let supportText: String?
-    @StateObject private var viewModel = FavoritesViewModel()
+    @EnvironmentObject private var viewModel: FavoritesViewModel
     
     var body: some View {
         VStack(alignment: .center) {
@@ -41,7 +41,7 @@ struct UserDetailsView: View {
             Button(action: {
                 viewModel.toggleFavorite(user)
             }) {
-                let isFavorite = viewModel.checkIsFavorite(user)
+                let isFavorite = viewModel.isFavorite
                 Label(isFavorite ? "Видалити з улюблених" : "Додати до улюблених", systemImage: "heart.fill")
                     .padding()
                     .background(isFavorite ? Color.red : Color.blue)

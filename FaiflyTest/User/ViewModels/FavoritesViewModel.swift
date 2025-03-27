@@ -13,18 +13,14 @@ class FavoritesViewModel: ObservableObject {
     
     @Published var isFavorite: Bool = false
     
-    func checkIsFavorite(_ user: User) -> Bool {
-        return favorites.contains { $0.email == user.email && !$0.isInvalidated }
+    func updateIsFavorite(_ user: User) {
+        isFavorite = favorites.contains { !$0.isInvalidated && $0.email == user.email }
     }
     
     func toggleFavorite(_ user: User) {
-        let realm = try! Realm()
         let predicate = NSPredicate(format: "email = %@", user.email)
-        
-        if let existing = realm.objects(FavoriteUser.self).filter(predicate).first {
-            try! realm.write {
-                realm.delete(existing)
-            }
+        if let existing = favorites.filter(predicate).first {
+            $favorites.remove(existing)
             isFavorite = false
         } else {
             let favorite = FavoriteUser()
@@ -33,10 +29,7 @@ class FavoritesViewModel: ObservableObject {
             favorite.first_name = user.first_name
             favorite.last_name = user.last_name
             favorite.avatar = user.avatar
-            
-            try! realm.write {
-                realm.add(favorite)
-            }
+            $favorites.append(favorite)
             isFavorite = true
         }
     }

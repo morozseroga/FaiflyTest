@@ -24,7 +24,7 @@ extension FavoriteUser {
     var asUser: User? {
         guard isValid else { return nil }
         return User(
-            id: 0,
+            id: id,
             email: email,
             first_name: first_name,
             last_name: last_name,

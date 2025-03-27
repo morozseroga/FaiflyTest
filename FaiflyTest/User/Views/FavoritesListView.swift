@@ -14,7 +14,7 @@ struct FavoritesListView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(favorites.filter { !$0.isInvalidated }, id: \.email) { favorite in
+                ForEach(favorites, id: \.email) { favorite in
                     if let user = favorite.asUser {
                         NavigationLink(destination: UserDetailsView(user: user, supportText: nil)) {
                             UserRow(user: user)

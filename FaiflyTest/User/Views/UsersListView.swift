@@ -21,7 +21,7 @@ struct UsersListView: View {
                     }
                 }
                 
-                if !viewModel.isLoading {
+                if !viewModel.isLoading && viewModel.hasMorePages {
                     ProgressView()
                         .onAppear {
                             Task {
@@ -32,7 +32,7 @@ struct UsersListView: View {
             }
             .navigationTitle("Всі Користувачі")
             .refreshable {
-                await viewModel.loadMoreUsers()
+                await viewModel.refreshUsers()
             }
         }
         .alert(isPresented: .init(get: { viewModel.errorMessage != nil }, set: { _ in viewModel.errorMessage = nil })) {

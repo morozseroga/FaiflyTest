@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct UserApp: View {
     var body: some View {
         TabView {
@@ -21,6 +20,7 @@ struct UserApp: View {
                     Label("Улюблені", systemImage: "heart.fill")
                 }
         }
+        .environmentObject(FavoritesViewModel())
     }
 }
 

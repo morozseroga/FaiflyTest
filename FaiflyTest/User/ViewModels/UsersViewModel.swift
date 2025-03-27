@@ -12,8 +12,8 @@ class UsersViewModel: ObservableObject {
     @Published var supportText: String? = nil
     @Published var isLoading = false
     @Published var errorMessage: String?
+    var hasMorePages = true
     private var currentPage = 1
-    private var hasMorePages = true
     private let apiService = APIService()
     
     @MainActor
@@ -35,5 +35,11 @@ class UsersViewModel: ObservableObject {
         }
 
         isLoading = false
+    }
+    
+    func refreshUsers() async {
+        currentPage = 1
+        users.removeAll()
+        await loadMoreUsers()
     }
 }
